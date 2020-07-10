@@ -5,7 +5,6 @@
  * file.
  */
 
-import User from 'App/Models/User'
 import {AuthConfig} from '@ioc:Adonis/Addons/Auth'
 
 /*
@@ -50,27 +49,8 @@ const authConfig: AuthConfig = {
       },
 
       provider: {
-        /*
-        |--------------------------------------------------------------------------
-        | Driver
-        |--------------------------------------------------------------------------
-        |
-        | Name of the driver
-        |
-        */
-        driver: 'lucid',
-
-        /*
-        |--------------------------------------------------------------------------
-        | Identifier key
-        |--------------------------------------------------------------------------
-        |
-        | The identifier key is the unique key on the model. In most cases specifying
-        | the primary key is the right choice.
-        |
-        */
-        identifierKey: 'id',
-
+        driver: 'database',
+        usersTable: 'users',
         /*
         |--------------------------------------------------------------------------
         | Uids
@@ -91,7 +71,7 @@ const authConfig: AuthConfig = {
         | The model to use for fetching or finding users
         |
         */
-        model: User,
+        identifierKey: 'id',
       },
     },
   },

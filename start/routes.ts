@@ -28,6 +28,7 @@ Route
   .group(() => {
     Route.resource('users', 'UserController')
       .apiOnly()
+      .except(['store'])
 
     Route.resource('users.messages', 'MessageController')
       .apiOnly()

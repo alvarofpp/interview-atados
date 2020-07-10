@@ -5,6 +5,10 @@ import ResponsePattern from 'App/Helpers/ResponsePattern';
 import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class AuthController {
+  /**
+   * 
+   * @param request
+   */
   public async register({request}: HttpContextContract) {
     const data = await request.validate(RegisterValidator)
     const trx = await Database.transaction()
@@ -15,7 +19,11 @@ export default class AuthController {
       await trx.commit()
       return ResponsePattern.success({
         message: 'User registered successfully!',
-        data: user,
+        data: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        },
       })
     } catch (error) {
       await trx.rollback()
@@ -34,7 +42,7 @@ export default class AuthController {
     return token.toJSON()
   }
 
-  public async logout({request}: HttpContextContract) {
+  public async logout({request, auth}: HttpContextContract) {
     const email = request.input('email')
     const password = request.input('password')
 
