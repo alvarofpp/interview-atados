@@ -33,12 +33,12 @@ Route
     Route.resource('users.messages', 'MessageController')
       .apiOnly()
 
-    Route.get('/logout', 'AuthController.logout')
+    Route.get('auth/logout', 'AuthController.logout')
       .as('auth.logout')
   }).middleware('auth:api')
 
 Route.post('auth/register', 'AuthController.register')
   .as('auth.register')
-Route.post('/login', 'AuthController.login')
+Route.post('auth/login', 'AuthController.login')
   .as('auth.login')
 
