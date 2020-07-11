@@ -30,7 +30,7 @@ Route
       .apiOnly()
       .except(['store'])
 
-    Route.resource('users.messages', 'MessageController')
+    Route.resource('messages', 'MessageController')
       .apiOnly()
 
     Route.get('auth/logout', 'AuthController.logout')
