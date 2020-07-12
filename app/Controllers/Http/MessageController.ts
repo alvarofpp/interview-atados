@@ -1,5 +1,4 @@
 import {HttpContextContract} from "@ioc:Adonis/Core/HttpContext";
-import ResponsePattern from "../../Helpers/ResponsePattern";
 import StoreValidator from "App/Validators/Message/StoreValidator";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Message from "App/Models/Message";
@@ -13,8 +12,9 @@ export default class MessageController {
    *
    * @param request
    * @param auth
+   * @param response
    */
-  public async index({request, auth}: HttpContextContract) {
+  public async index({request, auth, response}: HttpContextContract) {
     const user = await auth.authenticate()
     var clauses: any = {
       user_to_id: user.id,
@@ -24,9 +24,14 @@ export default class MessageController {
       'column': 'readed',
       'type': 'boolean',
     },]
+
     clauses = Filter.apply(queryString, filters, clauses)
     if ('hasError' in clauses) {
-      return ResponsePattern.error(clauses)
+      return response.status(400)
+        .send({
+          message: clauses.message,
+          error: clauses.error,
+      })
     }
 
     const messagesQuery = await Database.query()
@@ -34,7 +39,8 @@ export default class MessageController {
       .from('messages')
       .where(clauses)
 
-    return ResponsePattern.data(messagesQuery)
+    return response.status(200)
+      .send(messagesQuery)
   }
 
   /**
@@ -42,8 +48,9 @@ export default class MessageController {
    *
    * @param request
    * @param auth
+   * @param response
    */
-  public async store({request, auth}: HttpContextContract) {
+  public async store({request, auth, response}: HttpContextContract) {
     const data = await request.validate(StoreValidator)
     const trx = await Database.transaction()
     const user = await auth.authenticate()
@@ -58,16 +65,18 @@ export default class MessageController {
       }, {client: trx})
       await trx.commit()
 
-      return ResponsePattern.success({
-        message: 'Message registered successfully!',
-        data: message,
-      })
+      return response.status(200)
+        .send({
+          message: 'Message registered successfully!',
+          data: message,
+        })
     } catch (error) {
       await trx.rollback()
-      return ResponsePattern.error({
-        message: 'An error occurred during message registration.',
-        error: error,
-      })
+      return response.status(500)
+        .send({
+          message: 'An error occurred during message registration.',
+          error: error,
+        })
     }
   }
 
@@ -76,8 +85,9 @@ export default class MessageController {
    *
    * @param request
    * @param params
+   * @param response
    */
-  public async read({request, params}: HttpContextContract) {
+  public async read({request, params, response}: HttpContextContract) {
     const messageId = params.id
     request.updateBody({
       message_id: messageId,
@@ -85,13 +95,20 @@ export default class MessageController {
 
     await request.validate(ReadValidator)
     const message = await Message.findOrFail(messageId)
+    if (message.readed) {
+      return response.status(400)
+        .send({
+          message: 'Message is already marked as read.',
+        })
+    }
+
     message.readed = true
     await message.save()
 
-    return ResponsePattern.success({
-      message: 'Message marked as read.',
-      data: message,
-    })
+    return response.status(200)
+      .send({
+        message: 'Message marked as read.',
+      })
   }
 
   /**
@@ -99,8 +116,9 @@ export default class MessageController {
    *
    * @param request
    * @param params
+   * @param response
    */
-  public async destroy({request, params}: HttpContextContract) {
+  public async destroy({request, params, response}: HttpContextContract) {
     request.updateBody({
       message_id: params.id,
     })
@@ -109,9 +127,10 @@ export default class MessageController {
     const message = await Message.findOrFail(data.message_id)
     // await message.delete()
 
-    return ResponsePattern.success({
-      message: `Message successfully deleted.`,
-      data: message,
-    })
+    return response.status(200)
+      .send({
+        message: `Message successfully deleted.`,
+        data: message,
+      })
   }
 }
