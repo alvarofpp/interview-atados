@@ -31,7 +31,11 @@ Route.group(() => {
   Route.resource('messages', 'MessageController')
     .apiOnly()
     .only(['index', 'store', 'destroy',])
+    .middleware({
+      destroy: 'user_relationship:messages,user_from_id'
+  })
   Route.put('messages/:id/read', 'MessageController.read')
+    .middleware('user_relationship:messages,user_to_id')
     .as('messages.read')
 
   /*

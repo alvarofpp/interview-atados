@@ -2,8 +2,6 @@ import {HttpContextContract} from "@ioc:Adonis/Core/HttpContext";
 import StoreValidator from "App/Validators/Message/StoreValidator";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Message from "App/Models/Message";
-import DestroyValidator from "App/Validators/Message/DestroyValidator";
-import ReadValidator from "App/Validators/Message/ReadValidator";
 import Filter from "App/Helpers/Filter";
 
 export default class MessageController {
@@ -27,11 +25,11 @@ export default class MessageController {
 
     clauses = Filter.apply(queryString, filters, clauses)
     if ('hasError' in clauses) {
-      return response.status(400)
+      return response.status(422)
         .send({
           message: clauses.message,
           error: clauses.error,
-      })
+        })
     }
 
     const messagesQuery = await Database.query()
@@ -83,18 +81,13 @@ export default class MessageController {
   /**
    * Marks a message as read.
    *
-   * @param request
    * @param params
    * @param response
    */
-  public async read({request, params, response}: HttpContextContract) {
+  public async read({params, response}: HttpContextContract) {
     const messageId = params.id
-    request.updateBody({
-      message_id: messageId,
-    })
-
-    await request.validate(ReadValidator)
     const message = await Message.findOrFail(messageId)
+
     if (message.readed) {
       return response.status(400)
         .send({
@@ -114,17 +107,11 @@ export default class MessageController {
   /**
    * Remove the specified resource from storage.
    *
-   * @param request
    * @param params
    * @param response
    */
-  public async destroy({request, params, response}: HttpContextContract) {
-    request.updateBody({
-      message_id: params.id,
-    })
-    const data = await request.validate(DestroyValidator)
-    console.log('data:', data)
-    const message = await Message.findOrFail(data.message_id)
+  public async destroy({params, response}: HttpContextContract) {
+    const message = await Message.findOrFail(params.id)
     // await message.delete()
 
     return response.status(200)
