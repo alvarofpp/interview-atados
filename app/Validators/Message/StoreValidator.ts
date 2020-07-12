@@ -29,7 +29,7 @@ export default class StoreValidator {
    */
   public schema = schema.create({
     text: schema.string({trim: true}, []),
-    scheduled_at: schema.date({
+    scheduled_at: schema.date.optional({
       format: 'dd/MM/yyyy HH:mm',
     }),
     user_to_id: schema.number([
