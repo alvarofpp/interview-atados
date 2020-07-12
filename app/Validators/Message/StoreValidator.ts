@@ -1,9 +1,9 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import {HttpContextContract} from '@ioc:Adonis/Core/HttpContext'
 import {rules, schema, validator} from '@ioc:Adonis/Core/Validator'
 import messages from 'App/Validators/messages'
 
 export default class StoreValidator {
-  constructor (private ctx: HttpContextContract) {
+  constructor(private ctx: HttpContextContract) {
   }
 
   public reporter = validator.reporters.vanilla;
@@ -28,16 +28,12 @@ export default class StoreValidator {
    *    ```
    */
   public schema = schema.create({
-    text: schema.string({}, []),
-    scheduled_at: schema.string({}, [
-      rules.date_format({format: 'DD/MM/YYYY HH:mm'}),
-      rules.email(),
-      rules.unique({ table: 'users', column: 'email' }),
-    ]),
-    user_to_id: schema.string({}, [
-      rules.confirmed(),
-      rules.minLength(6),
-      rules.maxLength(20),
+    text: schema.string({trim: true}, []),
+    scheduled_at: schema.date({
+      format: 'dd/MM/yyyy HH:mm',
+    }),
+    user_to_id: schema.number([
+      rules.exists({table: 'users', column: 'id'})
     ]),
   })
 
@@ -60,6 +56,6 @@ export default class StoreValidator {
    *   'profile.username.required': 'Username is required',
    *   'scores.*.number': 'Define scores as valid numbers'
    * }
-  */
+   */
   public messages = messages
 }

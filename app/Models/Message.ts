@@ -15,13 +15,19 @@ export default class Message extends BaseModel {
   public readed: boolean
 
   @column.dateTime()
-  public scheduledAt: DateTime
+  public scheduled_at: DateTime
+
+  @column()
+  public user_from_id: number
+
+  @column()
+  public user_to_id: number
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  public created_at: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  public updated_at: DateTime
 
   @belongsTo(() => User, {
     localKey: 'userFromId',
