@@ -4,6 +4,7 @@ import StoreValidator from "App/Validators/Message/StoreValidator";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Message from "App/Models/Message";
 import DestroyValidator from "App/Validators/Message/DestroyValidator";
+import ReadValidator from "App/Validators/Message/ReadValidator";
 
 export default class MessageController {
   public async store({request, auth}: HttpContextContract) {
@@ -34,11 +35,26 @@ export default class MessageController {
     }
   }
 
-  public async destroy({request, params, auth}: HttpContextContract) {
-    const user = await auth.authenticate()
+  public async read({request, params}: HttpContextContract) {
+    const messageId = params.id
+    request.updateBody({
+      message_id: messageId,
+    })
+
+    await request.validate(ReadValidator)
+    const message = await Message.findOrFail(messageId)
+    message.readed = true
+    await message.save()
+
+    return ResponsePattern.success({
+      message: 'Message marked as read.',
+      data: message,
+    })
+  }
+
+  public async destroy({request, params}: HttpContextContract) {
     request.updateBody({
       message_id: params.id,
-      user_from_id: user.id,
     })
     const data = await request.validate(DestroyValidator)
     console.log('data:', data)

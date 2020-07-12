@@ -1,7 +1,7 @@
 import {rules, schema} from '@ioc:Adonis/Core/Validator'
 import ValidatorDesign from "App/Validators/ValidatorDesign";
 
-export default class DestroyValidator extends ValidatorDesign {
+export default class ReadValidator extends ValidatorDesign {
   /**
    * Defining a schema to validate the "shape", "type", "formatting" and "integrity" of data.
    *
@@ -26,7 +26,7 @@ export default class DestroyValidator extends ValidatorDesign {
       rules.exists({table: 'messages', column: 'id'}),
       rules.belongs_user({
         table: 'messages',
-        column: 'user_from_id',
+        column: 'user_to_id',
         userId: this.ctx.auth.user?.id
       }),
     ]),
