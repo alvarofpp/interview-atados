@@ -8,6 +8,12 @@ import ReadValidator from "App/Validators/Message/ReadValidator";
 import Filter from "App/Helpers/Filter";
 
 export default class MessageController {
+  /**
+   * Display a listing of the resource.
+   *
+   * @param request
+   * @param auth
+   */
   public async index({request, auth}: HttpContextContract) {
     const user = await auth.authenticate()
     var clauses: any = {
@@ -31,6 +37,12 @@ export default class MessageController {
     return ResponsePattern.data(messagesQuery)
   }
 
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @param request
+   * @param auth
+   */
   public async store({request, auth}: HttpContextContract) {
     const data = await request.validate(StoreValidator)
     const trx = await Database.transaction()
@@ -59,6 +71,12 @@ export default class MessageController {
     }
   }
 
+  /**
+   * Marks a message as read.
+   *
+   * @param request
+   * @param params
+   */
   public async read({request, params}: HttpContextContract) {
     const messageId = params.id
     request.updateBody({
@@ -76,6 +94,12 @@ export default class MessageController {
     })
   }
 
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param request
+   * @param params
+   */
   public async destroy({request, params}: HttpContextContract) {
     request.updateBody({
       message_id: params.id,

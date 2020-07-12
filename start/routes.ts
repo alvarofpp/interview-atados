@@ -24,22 +24,26 @@ Route.get('/', async () => {
   return {hello: 'world'}
 })
 
-Route
-  .group(() => {
-    Route.resource('users', 'UserController')
-      .apiOnly()
-      .except(['store'])
+Route.group(() => {
+  /*
+   * Messages
+   */
+  Route.resource('messages', 'MessageController')
+    .apiOnly()
+    .only(['index', 'store', 'destroy',])
+  Route.put('messages/:id/read', 'MessageController.read')
+    .as('messages.read')
 
-    Route.resource('messages', 'MessageController')
-      .apiOnly()
-      .only(['index', 'store', 'destroy',])
-    Route.put('messages/:id/read', 'MessageController.read')
-      .as('messages.read')
+  /*
+   * Auth
+   */
+  Route.get('auth/logout', 'AuthController.logout')
+    .as('auth.logout')
+}).middleware('auth:api')
 
-    Route.get('auth/logout', 'AuthController.logout')
-      .as('auth.logout')
-  }).middleware('auth:api')
-
+/*
+ * Auth
+ */
 Route.post('auth/register', 'AuthController.register')
   .as('auth.register')
 Route.post('auth/login', 'AuthController.login')

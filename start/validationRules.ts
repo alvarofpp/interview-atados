@@ -35,5 +35,4 @@ validator.rule('belongs_user', async (
     errorReporter.report(pointer, 'belongs_user', 'Message does not belong to the user in the session.', arrayExpressionPointer)
     console.log('ATIVOU ERRO')
   }
-
 })
