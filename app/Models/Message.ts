@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
-import User from 'App/Models/User'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Message extends BaseModel {
   public static table = 'messages'
@@ -15,29 +14,17 @@ export default class Message extends BaseModel {
   public readed: boolean
 
   @column.dateTime()
-  public scheduled_at: DateTime
+  public scheduledAt: DateTime
 
   @column()
-  public user_from_id: number
+  public userFromId: number
 
   @column()
-  public user_to_id: number
+  public userToId: number
 
   @column.dateTime({ autoCreate: true })
-  public created_at: DateTime
+  public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updated_at: DateTime
-
-  @belongsTo(() => User, {
-    localKey: 'userFromId',
-    foreignKey: 'id',
-  })
-  public userFrom: BelongsTo<typeof User>
-
-  @belongsTo(() => User, {
-    localKey: 'userToId',
-    foreignKey: 'id',
-  })
-  public userTo: BelongsTo<typeof User>
+  public updatedAt: DateTime
 }

@@ -5,8 +5,32 @@ import Database from "@ioc:Adonis/Lucid/Database";
 import Message from "App/Models/Message";
 import DestroyValidator from "App/Validators/Message/DestroyValidator";
 import ReadValidator from "App/Validators/Message/ReadValidator";
+import Filter from "App/Helpers/Filter";
 
 export default class MessageController {
+  public async index({request, auth}: HttpContextContract) {
+    const user = await auth.authenticate()
+    var clauses: any = {
+      user_to_id: user.id,
+    }
+    const queryString = request.get()
+    const filters = [{
+      'column': 'readed',
+      'type': 'boolean',
+    },]
+    clauses = Filter.apply(queryString, filters, clauses)
+    if ('hasError' in clauses) {
+      return ResponsePattern.error(clauses)
+    }
+
+    const messagesQuery = await Database.query()
+      .select('*')
+      .from('messages')
+      .where(clauses)
+
+    return ResponsePattern.data(messagesQuery)
+  }
+
   public async store({request, auth}: HttpContextContract) {
     const data = await request.validate(StoreValidator)
     const trx = await Database.transaction()
@@ -16,9 +40,9 @@ export default class MessageController {
       const message = await Message.create({
         text: data.text,
         readed: false,
-        scheduled_at: data.scheduled_at,
-        user_from_id: user.id,
-        user_to_id: data.user_to_id,
+        scheduledAt: data.scheduled_at,
+        userFromId: user.id,
+        userToId: data.user_to_id,
       }, {client: trx})
       await trx.commit()
 

@@ -32,8 +32,8 @@ validator.rule('belongs_user', async (
     .where(column, userId)
 
   if (total === 0) {
-    console.log(errorReporter, pointer, arrayExpressionPointer)
-    console.log('CHAMOU')
+    errorReporter.report(pointer, 'belongs_user', 'Message does not belong to the user in the session.', arrayExpressionPointer)
+    console.log('ATIVOU ERRO')
   }
 
 })

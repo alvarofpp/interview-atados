@@ -32,8 +32,9 @@ Route
 
     Route.resource('messages', 'MessageController')
       .apiOnly()
-      .only(['store', 'destroy',])
+      .only(['index', 'store', 'destroy',])
     Route.put('messages/:id/read', 'MessageController.read')
+      .as('messages.read')
 
     Route.get('auth/logout', 'AuthController.logout')
       .as('auth.logout')
