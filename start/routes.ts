@@ -32,6 +32,7 @@ Route
 
     Route.resource('messages', 'MessageController')
       .apiOnly()
+      .only(['store', 'destroy',])
 
     Route.get('auth/logout', 'AuthController.logout')
       .as('auth.logout')

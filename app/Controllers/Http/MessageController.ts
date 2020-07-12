@@ -3,6 +3,7 @@ import ResponsePattern from "../../Helpers/ResponsePattern";
 import StoreValidator from "App/Validators/Message/StoreValidator";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Message from "App/Models/Message";
+import DestroyValidator from "App/Validators/Message/DestroyValidator";
 
 export default class MessageController {
   public async store({request, auth}: HttpContextContract) {
@@ -31,5 +32,22 @@ export default class MessageController {
         error: error,
       })
     }
+  }
+
+  public async destroy({request, params, auth}: HttpContextContract) {
+    const user = await auth.authenticate()
+    request.updateBody({
+      message_id: params.id,
+      user_from_id: user.id,
+    })
+    const data = await request.validate(DestroyValidator)
+    console.log('data:', data)
+    const message = await Message.findOrFail(data.message_id)
+    // await message.delete()
+
+    return ResponsePattern.success({
+      message: `Message successfully deleted.`,
+      data: message,
+    })
   }
 }

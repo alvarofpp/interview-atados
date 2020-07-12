@@ -1,5 +1,5 @@
 import {validator} from '@ioc:Adonis/Core/Validator'
-import moment = require('moment')
+import Database from '@ioc:Adonis/Lucid/Database'
 
 /*
 |--------------------------------------------------------------------------
@@ -10,25 +10,47 @@ import moment = require('moment')
 | boot.
 |
 */
-validator.rule('date_format', (
-  value, [{format = 'YYYY-MM-DD HH:mm:ss'}],
-  {pointer, arrayExpressionPointer, errorReporter}
+validator.rule('belongs_user', async (
+  value, [{table, column}],
+  {pointer, arrayExpressionPointer, errorReporter, root, tip}
 ) => {
+  console.log('------------BELONGS TO THE USER------------');
   /**
-   * Skip validation when value is not a string. The string
+   * Skip validation when value is not a number. The number
    * schema rule will handle it
    */
-  if (typeof (value) !== 'string') {
+  if (typeof (value) !== 'number') {
     return
   }
 
   /**
+   * Get user id
+   */
+  validator.helpers.getFieldValue('user_from_id', root, tip)
+  const userId = tip.user_from_id
+
+  /**
    * Parse phone number from a string
    */
-  const valid = moment(value, format, true);
+  const [{total}] = await Database.query()
+    .count('* AS total')
+    .from(table)
+    .where('id', value)
+    .where(column, userId)
 
-  if (!valid.isValid()) {
-    errorReporter.report(pointer, 'date_format', 'Invalid format', arrayExpressionPointer)
+  console.log("VALUE: ", value);
+  console.log("TABLE: ", table);
+  console.log("COLUMN: ", column);
+  console.log("UserID: ", userId);
+  console.log("TOTAL: ", total)
+  console.log("IF: ", total == 0, total === 0)
+  console.log('------------------------------------------------');
+
+  if (total === 0) {
+    console.log('CHAMOU')
+    errorReporter.report(pointer, 'belongs_user', 'Message does not belong to the user in the session.', arrayExpressionPointer)
+    console.log(errorReporter, pointer, arrayExpressionPointer)
+    console.log('CHAMOU')
   }
 
 })
