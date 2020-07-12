@@ -6,4 +6,7 @@ export default {
   email: 'The {{ field }} must be a valid email address.',
   unique: 'The {{ field }} has already been taken.',
   exists: 'The selected {{ field }} is invalid.',
+  string: 'The {{ field }} must be a string.',
+  date: 'The {{ field }} is not a valid date.',
+  number: 'The {{ field }} must be a number.',
 }

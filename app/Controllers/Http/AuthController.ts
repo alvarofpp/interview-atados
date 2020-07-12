@@ -44,11 +44,9 @@ export default class AuthController {
    */
   public async login({request, auth}: HttpContextContract) {
     const data = await request.validate(LoginValidator)
-
     const token = await auth.use('api').attempt(data.email, data.password)
-    return ResponsePattern.data({
-      data: token.toJSON()
-    })
+
+    return ResponsePattern.data(token.toJSON())
   }
 
   /**
