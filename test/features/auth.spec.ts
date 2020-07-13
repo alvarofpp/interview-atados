@@ -13,7 +13,7 @@ const userData = {
 test.group('Auth flow', () => {
   this.accessToken = ''
 
-  test('Register', async (assert) => {
+  test('Implementar criação de usuários com os campos email, nome e senha', async (assert) => {
     /**
      * Make request
      */
@@ -35,16 +35,21 @@ test.group('Auth flow', () => {
         email: '',
       }
     })
+  })
+
+  test('Implementar hash de senha', async (assert) => {
+    const user = await User.query()
+      .where('email', userData.email)
+      .firstOrFail()
 
     /**
      * Check database
      */
-    const user = await User.find(response.body.data.id)
     assert.isNotNull(user)
-    assert.notStrictEqual(user?.password, userData.password)
+    assert.notStrictEqual(user.password, userData.password)
   })
 
-  test('Login', async (assert) => {
+  test('Como usuário eu devo conseguir gerar um token de acesso com uma combinação de email e senha', async (assert) => {
     /**
      * Make request
      */
@@ -69,6 +74,25 @@ test.group('Auth flow', () => {
     })
 
     this.accessToken = response.body.data.token
+  })
+
+  test('Como usuário eu devo conseguir me registrar somente se meu email não estiver registrado', async (assert) => {
+    /**
+     * Make request
+     */
+    const response = await supertest(BASE_URL)
+      .post('/auth/register')
+      .send(userData)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(422)
+
+    /**
+     * Check response
+     */
+    assert.containsAllKeys(response.body, {
+      email: '',
+    })
   })
 
   test('Logout', async (assert) => {

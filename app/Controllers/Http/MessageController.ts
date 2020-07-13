@@ -3,6 +3,7 @@ import StoreValidator from "App/Validators/Message/StoreValidator";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Message from "App/Models/Message";
 import Filter from "App/Helpers/Filter";
+import moment from 'moment'
 
 export default class MessageController {
   /**
@@ -36,6 +37,10 @@ export default class MessageController {
       .select('*')
       .from('messages')
       .where(clauses)
+      .where((query) => {
+        return query.whereNull('scheduled_at')
+          .orWhere('scheduled_at', '<', moment().format('DD/MM/YYYY hh:mm:ss'))
+      })
 
     return response.status(200)
       .send({
