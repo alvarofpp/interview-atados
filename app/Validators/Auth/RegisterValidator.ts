@@ -23,6 +23,7 @@ export default class RegisterValidator extends ValidatorDesign {
    */
   public schema = schema.create({
     name: schema.string({trim: true}, [
+      rules.minLength(3),
       rules.maxLength(255),
     ]),
     email: schema.string({trim: true}, [
