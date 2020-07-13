@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import {BaseModel, BelongsTo, belongsTo, column} from '@ioc:Adonis/Lucid/Orm'
+import Block from "App/Models/Block";
 
 export default class BlockUser extends BaseModel {
   public static table = 'blocks_users'
@@ -18,4 +19,7 @@ export default class BlockUser extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @belongsTo(() => Block)
+  public block: BelongsTo<typeof Block>
 }

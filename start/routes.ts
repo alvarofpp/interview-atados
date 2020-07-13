@@ -26,7 +26,7 @@ Route.get('/', async () => {
 
 Route.group(() => {
   /*
-   * Messages
+   * Message
    */
   Route.resource('messages', 'MessageController')
     .apiOnly()
@@ -38,6 +38,13 @@ Route.group(() => {
   Route.put('messages/:id/read', 'MessageController.read')
     .middleware('user_relationship:messages,user_to_id')
     .as('messages.read')
+
+  /*
+   * BlockUser
+   */
+  Route.resource('block_user', 'BlockUserController')
+    .apiOnly()
+    .only(['index', 'store', 'destroy',])
 
   /*
    * Auth

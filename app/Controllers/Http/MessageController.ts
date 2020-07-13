@@ -38,7 +38,9 @@ export default class MessageController {
       .where(clauses)
 
     return response.status(200)
-      .send(messagesQuery)
+      .send({
+        data: messagesQuery
+      })
   }
 
   /**
@@ -112,12 +114,11 @@ export default class MessageController {
    */
   public async destroy({params, response}: HttpContextContract) {
     const message = await Message.findOrFail(params.id)
-    // await message.delete()
+    await message.delete()
 
     return response.status(200)
       .send({
         message: `Message successfully deleted.`,
-        data: message,
       })
   }
 }
