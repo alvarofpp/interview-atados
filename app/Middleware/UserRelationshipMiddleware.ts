@@ -10,7 +10,7 @@ export default class UserRelationshipMiddleware {
     const user = await auth.authenticate()
 
     /*
-     * Check if exists element for user
+     * Check if exists element for user.
      */
     const [{total}] = await Database.query()
       .count('* AS total')

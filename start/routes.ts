@@ -32,6 +32,7 @@ Route.group(() => {
     .apiOnly()
     .only(['index', 'store', 'destroy',])
     .middleware({
+      store: 'block:messages_send',
       destroy: 'user_relationship:messages,user_from_id'
     })
   Route.put('messages/:id/read', 'MessageController.read')

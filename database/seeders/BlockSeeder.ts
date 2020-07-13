@@ -7,7 +7,7 @@ export default class BlockSeeder extends BaseSeeder {
 
     await Block.updateOrCreateMany(uniqueKey, [
       {
-        slug: 'message_send',
+        slug: 'messages_send',
         description: 'User will no longer be able to send messages.',
       },
     ])
