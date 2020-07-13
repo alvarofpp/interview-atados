@@ -1,6 +1,6 @@
 import test from 'japa'
 import supertest from 'supertest'
-import User from "App/Models/User";
+import User from 'App/Models/User'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 const userData = {
@@ -10,7 +10,7 @@ const userData = {
   "password_confirmation": "testando"
 }
 
-test.group('Auth', () => {
+test.group('Auth flow', () => {
   this.accessToken = ''
 
   test('Register', async (assert) => {

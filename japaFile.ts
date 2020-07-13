@@ -9,6 +9,12 @@ process.env.NODE_ENV = 'testing'
 process.env.ADONIS_ACE_CWD = join(__dirname, '..')
 sourceMapSupport.install({ handleUncaughtExceptions: false })
 
+async function databaseSeeders () {
+  await execa.node('ace', ['db:seed'], {
+    stdio: 'inherit',
+  })
+}
+
 async function runMigrations () {
   await execa.node('ace', ['migration:run'], {
     stdio: 'inherit',
@@ -36,6 +42,7 @@ configure({
   ],
   before: [
     runMigrations,
+    databaseSeeders,
     startHttpServer,
   ],
   after: [
