@@ -32,12 +32,13 @@ node ace generate:key
 
 # Crie a pasta que conterá o banco de dados sqlite
 mkdir tmp
+## A partir daqui você já pode executar o comando de testes
 
 # Criando as tabelas no banco de dados
 node ace migration:run
 
 # Povoando o banco de dados
-node ace db:seed --files=BlockSeeder
+node ace db:seed
 
 # Ativando o servidor
 node ace serve
@@ -61,13 +62,13 @@ Os testes foram nomeados de acordo com as história descritas, sendo elas:
 - Como usuário eu devo conseguir marcar uma mensagem como lido
 - Como usuário eu devo conseguir filtrar as mensagens por lido ou não
 
-Para os testes funcionarem, é preciso ativar o servidor.
+**Observação**: alguns comandos são executados antes e depois dos testes.
+Antes é executado os comandos de criação das tabelas (`node ace migration:run`) e povoamento das mesmas (`node ace db:seed`).
+Depois dos testes, todo o esquema do banco de dados é apagado (`node ace migration:rollback`).
+Portanto caso você queira testar o sistema após executar os testes, execute novamente os comandos de criação de tabelas e
+povoamento delas, respectivamente `node ace migration:run` e `node ace db:seed`.
 
 ```bash
-# Ativa o servidor
-node ace serve
-## Após isso, abra outro terminal para executar o comando de testes
-
 # Executa todos os testes
 node build/japaFile.js
 ```
